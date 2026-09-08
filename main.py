@@ -14,9 +14,9 @@ def get_campaign_analysis():
         {"Campaign_ID": "C004", "Channel": "Email Newsletter", "Spend": 300.0, "Conversions": 120, "CPA": 2.5, "ROI": 5.0}
     ]
     
-    df = pd.DataFrame(data)[cite: 1]
+    df = pd.DataFrame(data)
     
-    # Returns records in a tabular list format easily consumed by Power Query[cite: 1]
+    # Returns records in a tabular list format easily consumed by Power Query
     return df.to_dict(orient="records")
 
 
@@ -32,8 +32,13 @@ def get_campaign_json_table():
     
     df = pd.DataFrame(data)
     
-    # Returns the data in a JSON tabular format (Table Schema format with schema and data)
-    return df.to_dict(orient="table")
+    # Manually construct a safe tabular JSON format with schema and data rows
+    return {
+        "schema": {
+            "fields": [{"name": col, "type": str(dtype)} for col, dtype in zip(df.columns, df.dtypes)]
+        },
+        "data": df.to_dict(orient="records")
+    }
 
 
 # --- HTML TABLE ENDPOINT ---
